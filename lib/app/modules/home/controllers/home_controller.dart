@@ -4,6 +4,7 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class HomeController extends GetxController with StateMixin<dynamic> {
   QRViewController? qrViewController;
+  RxBool isScanned = false.obs;
 
   @override
   void onInit() {
@@ -18,8 +19,11 @@ class HomeController extends GetxController with StateMixin<dynamic> {
   void onQRViewCreated(QRViewController c) {
     qrViewController = c;
     qrViewController!.scannedDataStream.listen((Barcode result) {
+      if (isScanned.value) return;
       if (result.code == null) return;
       if (result.code!.trim().isEmpty) return;
+
+      isScanned.value = true;
       displayResult(result.code);
     });
   }
